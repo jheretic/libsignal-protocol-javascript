@@ -1,8 +1,8 @@
 /* vim: ts=4:sw=4:expandtab */
-var Internal = Internal || {};
 
 (function() {
     'use strict';
+    require("../build/curve25519_compiled.js");
 
     // Insert some bytes into the emscripten memory and return a pointer
     function _allocate(bytes) {
@@ -19,7 +19,7 @@ var Internal = Internal || {};
     var basepoint = new Uint8Array(32);
     basepoint[0] = 9;
 
-    Internal.curve25519 = {
+    exports.curve25519 = {
         keyPair: function(privKey) {
             var priv = new Uint8Array(privKey);
             priv[0]  &= 248;
@@ -121,25 +121,25 @@ var Internal = Internal || {};
         }
     };
 
-    Internal.curve25519_async = {
+    exports.curve25519_async = {
         keyPair: function(privKey) {
             return new Promise(function(resolve) {
-                resolve(Internal.curve25519.keyPair(privKey));
+                resolve(exports.curve25519.keyPair(privKey));
             });
         },
         sharedSecret: function(pubKey, privKey) {
             return new Promise(function(resolve) {
-                resolve(Internal.curve25519.sharedSecret(pubKey, privKey));
+                resolve(exports.curve25519.sharedSecret(pubKey, privKey));
             });
         },
         sign: function(privKey, message) {
             return new Promise(function(resolve) {
-                resolve(Internal.curve25519.sign(privKey, message));
+                resolve(exports.curve25519.sign(privKey, message));
             });
         },
         verify: function(pubKey, message, sig) {
             return new Promise(function(resolve, reject) {
-                if (Internal.curve25519.verify(pubKey, message, sig)) {
+                if (exports.curve25519.verify(pubKey, message, sig)) {
                     reject(new Error("Invalid signature"));
                 } else {
                     resolve();
