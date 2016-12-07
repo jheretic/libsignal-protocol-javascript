@@ -2,18 +2,22 @@
  * vim: ts=4:sw=4
  */
 
-var Internal = Internal || {};
-
 (function() {
     'use strict';
 
-    var crypto = window.crypto;
+    var Curve = require("./Curve.js");
 
-    if (!crypto || !crypto.subtle || typeof crypto.getRandomValues !== 'function') {
-        throw new Error('WebCrypto not found');
+    var crypto;
+    try {
+        crypto = require("crypto");
+    } catch(err) {
+        console.log('crypto support is disabled!');
     }
+    //if (!crypto || !crypto.subtle || typeof crypto.getRandomValues !== 'function') {
+    //    throw new Error('WebCrypto not found');
+    //}
 
-    Internal.crypto = {
+    exports.crypto = {
         getRandomBytes: function(size) {
             var array = new Uint8Array(size);
             crypto.getRandomValues(array);
@@ -42,18 +46,18 @@ var Internal = Internal || {};
         HKDF: function(input, salt, info) {
             // Specific implementation of RFC 5869 that only returns the first 3 32-byte chunks
             // TODO: We dont always need the third chunk, we might skip it
-            return Internal.crypto.sign(salt, input).then(function(PRK) {
+            return exports.crypto.sign(salt, input).then(function(PRK) {
                 var infoBuffer = new ArrayBuffer(info.byteLength + 1 + 32);
                 var infoArray = new Uint8Array(infoBuffer);
                 infoArray.set(new Uint8Array(info), 32);
                 infoArray[infoArray.length - 1] = 1;
-                return Internal.crypto.sign(PRK, infoBuffer.slice(32)).then(function(T1) {
+                return exports.crypto.sign(PRK, infoBuffer.slice(32)).then(function(T1) {
                     infoArray.set(new Uint8Array(T1));
                     infoArray[infoArray.length - 1] = 2;
-                    return Internal.crypto.sign(PRK, infoBuffer).then(function(T2) {
+                    return exports.crypto.sign(PRK, infoBuffer).then(function(T2) {
                         infoArray.set(new Uint8Array(T2));
                         infoArray[infoArray.length - 1] = 3;
-                        return Internal.crypto.sign(PRK, infoBuffer).then(function(T3) {
+                        return exports.crypto.sign(PRK, infoBuffer).then(function(T3) {
                             return [ T1, T2, T3 ];
                         });
                     });
@@ -64,33 +68,33 @@ var Internal = Internal || {};
         // Curve 25519 crypto
         createKeyPair: function(privKey) {
             if (privKey === undefined) {
-                privKey = Internal.crypto.getRandomBytes(32);
+                privKey = exports.crypto.getRandomBytes(32);
             }
-            return Internal.Curve.async.createKeyPair(privKey);
+            return Curve.Curve.async.createKeyPair(privKey);
         },
         ECDHE: function(pubKey, privKey) {
-            return Internal.Curve.async.ECDHE(pubKey, privKey);
+            return Curve.Curve.async.ECDHE(pubKey, privKey);
         },
         Ed25519Sign: function(privKey, message) {
-            return Internal.Curve.async.Ed25519Sign(privKey, message);
+            return Curve.Curve.async.Ed25519Sign(privKey, message);
         },
         Ed25519Verify: function(pubKey, msg, sig) {
-            return Internal.Curve.async.Ed25519Verify(pubKey, msg, sig);
+            return Curve.Curve.async.Ed25519Verify(pubKey, msg, sig);
         }
     };
 
 
     // HKDF for TextSecure has a bit of additional handling - salts always end up being 32 bytes
-    Internal.HKDF = function(input, salt, info) {
+    exports.HKDF = function(input, salt, info) {
         if (salt.byteLength != 32) {
             throw new Error("Got salt of incorrect length");
         }
 
-        return Internal.crypto.HKDF(input, salt,  util.toArrayBuffer(info));
+        return exports.crypto.HKDF(input, salt,  util.toArrayBuffer(info));
     };
 
-    Internal.verifyMAC = function(data, key, mac, length) {
-        return Internal.crypto.sign(key, data).then(function(calculated_mac) {
+    exports.verifyMAC = function(data, key, mac, length) {
+        return exports.crypto.sign(key, data).then(function(calculated_mac) {
             if (mac.byteLength != length  || calculated_mac.byteLength < length) {
                 throw new Error("Bad MAC length");
             }
@@ -107,14 +111,14 @@ var Internal = Internal || {};
             }
         });
     };
-
-    libsignal.HKDF = {
+/*
+    this.HKDF = {
         deriveSecrets: function(input, salt, info) {
             return Internal.HKDF(input, salt, info);
         }
     };
 
-    libsignal.crypto = {
+    this.crypto = {
         encrypt: function(key, data, iv) {
             return Internal.crypto.encrypt(key, data, iv);
         },
@@ -131,5 +135,6 @@ var Internal = Internal || {};
             return Internal.crypto.getRandomBytes(size);
         }
     };
+*/
 
 })();
