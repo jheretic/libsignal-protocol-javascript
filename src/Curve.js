@@ -1,6 +1,9 @@
 (function() {
     'use strict';
 
+		var curve25519_wrapper = require("./curve25519_wrapper.js");
+		var crypto_wrapper = require("./crypto.js");
+
     function validatePrivKey(privKey) {
         if (privKey === undefined || !(privKey instanceof ArrayBuffer) || privKey.byteLength != 32) {
             throw new Error("Invalid private key");
@@ -79,13 +82,10 @@
         };
     }
 
-    Internal.Curve       = wrapCurve25519(Internal.curve25519);
-    Internal.Curve.async = wrapCurve25519(Internal.curve25519_async);
-
     function wrapCurve(curve) {
         return {
             generateKeyPair: function() {
-                var privKey = Internal.crypto.getRandomBytes(32);
+                var privKey = crypto_wrapper.crypto.getRandomBytes(32);
                 return curve.createKeyPair(privKey);
             },
             createKeyPair: function(privKey) {
@@ -103,7 +103,6 @@
         };
     }
 
-    libsignal.Curve       = wrapCurve(Internal.Curve);
-    libsignal.Curve.async = wrapCurve(Internal.Curve.async);
-
+    exports.Curve       = wrapCurve(wrapCurve25519(curve25519_wrapper.curve25519));
+    exports.Curve.async = wrapCurve(wrapCurve25519(curve25519_wrapper.curve25519_async));
 })();
