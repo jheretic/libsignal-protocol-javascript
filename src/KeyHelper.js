@@ -4,7 +4,7 @@ function isNonNegativeInteger(n) {
     return (typeof n === 'number' && (n % 1) === 0  && n >= 0);
 }
 
-var KeyHelper = {
+module.exports = exports = {
     generateIdentityKeyPair: function() {
         return crypto_wrapper.crypto.createKeyPair();
     },
@@ -48,5 +48,3 @@ var KeyHelper = {
         });
     }
 };
-
-module.exports = KeyHelper;

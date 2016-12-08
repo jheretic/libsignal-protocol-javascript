@@ -6,22 +6,17 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    browserify: {
+      dist: {
+        src: 'src/index.js',
+        dest: 'dist/libsignal-protocol-new.js',
+      }, 
+      worker: {
+        src: 'src/curve25519_worker.js',
+        dest: 'dist/libsignal-protocol-worker-new.js',
+      } 
+    },
     concat: {
-      components: {
-        src: [
-          'node_modules/long/dist/long.js',
-          'node_modules/bytebuffer/dist/ByteBufferAB.js',
-          'node_modules/protobufjs/dist/protobuf.js'
-        ],
-        dest: 'build/components_concat.js',
-      },
-      curve25519: {
-        src: [
-          'build/curve25519_compiled.js',
-          'src/curve25519_wrapper.js',
-        ],
-        dest: 'build/curve25519_concat.js'
-      },
       protos: {
         src: [
           'protos/WhisperTextProtocol.proto'
@@ -39,51 +34,6 @@ module.exports = function(grunt) {
             return res + "''\t;\n";
           }
         }
-      },
-      protos_concat: {
-        src: [
-          'build/protoText.js',
-          'src/protobufs.js',
-        ],
-        dest: 'build/protobufs_concat.js'
-      },
-
-      worker: {
-        src: [
-          'build/curve25519_concat.js',
-          'src/curve25519_worker.js',
-        ],
-        dest: 'dist/libsignal-protocol-worker.js',
-        options: {
-          banner: ';(function(){\nvar Internal = {};\nvar libsignal = {};\n',
-          footer: '\n})();'
-        }
-
-      },
-      libsignalprotocol: {
-        src: [
-          'build/curve25519_concat.js',
-          'src/curve25519_worker_manager.js',
-          'build/components_concat.js',
-
-          'src/Curve.js',
-          'src/crypto.js',
-          'src/helpers.js',
-          'src/KeyHelper.js',
-          'build/protobufs_concat.js',
-          'src/SessionRecord.js',
-          'src/SignalProtocolAddress.js',
-          'src/SessionBuilder.js',
-          'src/SessionCipher.js',
-          'src/SessionLock.js',
-          'src/NumericFingerprint.js'
-        ],
-        dest: 'dist/libsignal-protocol.js',
-        options: {
-          banner: ';(function(){\nvar Internal = {};\nwindow.libsignal = {};\n',
-          footer: '\n})();'
-        }
-
       },
       test: {
         src: [
@@ -223,7 +173,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dev', ['connect', 'watch']);
   grunt.registerTask('test', ['jshint', 'jscs', 'connect', 'saucelabs-mocha']);
-  grunt.registerTask('default', ['concat']);
-  grunt.registerTask('build', ['compile', 'concat']);
+  grunt.registerTask('default', ['browserify']);
+  grunt.registerTask('build', ['compile', 'browserify']);
 
 };
