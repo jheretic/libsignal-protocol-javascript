@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         ],
         dest: 'build/protoText.js',
         options: {
-          banner: 'var Internal = Internal || {};\n\nInternal.protoText = function() {\n\tvar protoText = {};\n\n',
+          banner: 'exports.protoText = function() {\n\tvar protoText = {};\n\n',
           footer: '\n\treturn protoText;\n}();',
           process: function(src, file) {
             var res = "\tprotoText['" + file + "'] = \n";
