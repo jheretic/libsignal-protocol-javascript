@@ -1,11 +1,12 @@
 /* vim: ts=4:sw=4 */
-var Internal = Internal || {};
+ProtoBuf = require("protobufjs");
+files = require("../build/protoText.js");
 
-Internal.protobuf = function() {
+exports.protobuf = function() {
     'use strict';
 
     function loadProtoBufs(filename) {
-        return dcodeIO.ProtoBuf.loadProto(Internal.protoText['protos/' + filename]).build('textsecure');
+        return ProtoBuf.loadProto(files.protoText['protos/' + filename]).build('textsecure');
     }
 
     var protocolMessages = loadProtoBufs('WhisperTextProtocol.proto');
