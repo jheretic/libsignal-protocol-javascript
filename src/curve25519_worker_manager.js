@@ -1,27 +1,30 @@
 ;(function() {
 
 'use strict';
+var wrapper = require("./curve25519_wrapper.js");
 
 // I am the...workee?
-var origCurve25519 = Internal.curve25519_async;
+var origCurve25519 = wrapper.curve25519_async;
 
-Internal.startWorker = function(url) {
-    Internal.stopWorker(); // there can be only one
-    Internal.curve25519_async = new Curve25519Worker(url);
+exports.startWorker = function(url) {
+    exports.stopWorker(); // there can be only one
+    wrapper.curve25519_async = new Curve25519Worker(url);
 };
 
-Internal.stopWorker = function() {
-    if (Internal.curve25519_async instanceof Curve25519Worker) {
-        var worker = Internal.curve25519_async.worker;
-        Internal.curve25519_async = origCurve25519;
+exports.stopWorker = function() {
+    if (wrapper.curve25519_async instanceof Curve25519Worker) {
+        var worker = wrapper.curve25519_async.worker;
+        wrapper.curve25519_async = origCurve25519;
         worker.terminate();
     }
 };
 
+/*
 libsignal.worker = {
   startWorker: Internal.startWorker,
   stopWorker: Internal.stopWorker,
 };
+*/
 
 function Curve25519Worker(url) {
     this.jobs = {};
