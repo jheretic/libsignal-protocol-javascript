@@ -44,10 +44,10 @@
         });
     }
 
-    libsignal.FingerprintGenerator = function(iterations) {
+    FingerprintGenerator = function(iterations) {
         this.iterations = iterations;
     };
-    libsignal.FingerprintGenerator.prototype = {
+    FingerprintGenerator.prototype = {
         createFor: function(localIdentifier, localIdentityKey,
                             remoteIdentifier, remoteIdentityKey) {
             if (typeof localIdentifier !== 'string' ||
@@ -66,6 +66,8 @@
             });
         }
     };
+
+    module.exports = FingerprintGenerator;
 
 })();
 
