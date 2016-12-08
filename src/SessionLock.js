@@ -5,11 +5,11 @@
 ;(function() {
 'use strict';
 
-Internal.SessionLock = {};
+exports.SessionLock = {};
 
 var jobQueue = {};
 
-Internal.SessionLock.queueJobForNumber = function queueJobForNumber(number, runJob) {
+exports.SessionLock.queueJobForNumber = function queueJobForNumber(number, runJob) {
      var runPrevious = jobQueue[number] || Promise.resolve();
      var runCurrent = jobQueue[number] = runPrevious.then(runJob, runJob);
      runCurrent.then(function() {
