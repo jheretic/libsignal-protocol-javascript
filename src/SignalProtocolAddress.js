@@ -19,7 +19,7 @@ SignalProtocolAddress.prototype = {
   }
 };
 
-libsignal.SignalProtocolAddress = function(name, deviceId) {
+exports.SignalProtocolAddress = function(name, deviceId) {
   var address = new SignalProtocolAddress(name, deviceId);
 
   ['getName', 'getDeviceId', 'toString', 'equals'].forEach(function(method) {
@@ -27,10 +27,10 @@ libsignal.SignalProtocolAddress = function(name, deviceId) {
   }.bind(this));
 };
 
-libsignal.SignalProtocolAddress.fromString = function(encodedAddress) {
+exports.SignalProtocolAddress.fromString = function(encodedAddress) {
   if (typeof encodedAddress !== 'string' || !encodedAddress.match(/.*\.\d+/)) {
     throw new Error('Invalid SignalProtocolAddress string');
   }
   var parts = encodedAddress.split('.');
-  return new libsignal.SignalProtocolAddress(parts[0], parseInt(parts[1]));
+  return new exports.SignalProtocolAddress(parts[0], parseInt(parts[1]));
 };
