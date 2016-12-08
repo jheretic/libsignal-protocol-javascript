@@ -2,24 +2,24 @@
  * vim: ts=4:sw=4
  */
 
-var Internal = Internal || {};
+var ByteBuffer = require("bytebuffer");
 
-Internal.BaseKeyType = {
+exports.BaseKeyType = {
   OURS: 1,
   THEIRS: 2
 };
-Internal.ChainType = {
+exports.ChainType = {
   SENDING: 1,
   RECEIVING: 2
 };
 
 var ARCHIVED_STATES_MAX_LENGTH = 40;
 
-Internal.SessionRecord = function() {
+exports.SessionRecord = function() {
     'use strict';
     var MESSAGE_LOST_THRESHOLD_MS = 1000*60*60*24*7;
 
-    var StaticByteBufferProto = new dcodeIO.ByteBuffer().__proto__;
+    var StaticByteBufferProto = new ByteBuffer().__proto__;
     var StaticArrayBufferProto = new ArrayBuffer().__proto__;
     var StaticUint8ArrayProto = new Uint8Array().__proto__;
 
@@ -98,7 +98,7 @@ Internal.SessionRecord = function() {
 
         getSessionByBaseKey: function(baseKey) {
             var session = this._sessions[util.toString(baseKey)];
-            if (session && session.indexInfo.baseKeyType === Internal.BaseKeyType.OURS) {
+            if (session && session.indexInfo.baseKeyType === exports.BaseKeyType.OURS) {
                 console.log("Tried to lookup a session using our basekey");
                 return undefined;
             }
