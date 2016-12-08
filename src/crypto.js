@@ -6,6 +6,7 @@
     'use strict';
 
     var Curve = require("./Curve.js");
+    var getRandomValues = require("get-random-values");
 
     var crypto;
     try {
@@ -20,7 +21,7 @@
     exports.crypto = {
         getRandomBytes: function(size) {
             var array = new Uint8Array(size);
-            crypto.getRandomValues(array);
+            getRandomValues(array);
             return array.buffer;
         },
         encrypt: function(key, data, iv) {
