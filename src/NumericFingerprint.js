@@ -1,9 +1,12 @@
 (function() {
+    var ByteBuffer = require("bytebuffer");
+    var crypto = require("./crypto.js");
+
     var VERSION = 0;
 
     function iterateHash(data, key, count) {
-        data = dcodeIO.ByteBuffer.concat([data, key]).toArrayBuffer();
-        return Internal.crypto.hash(data).then(function(result) {
+        data = ByteBuffer.concat([data, key]).toArrayBuffer();
+        return crypto.crypto.hash(data).then(function(result) {
             if (--count === 0) {
                 return result;
             } else {
@@ -30,7 +33,7 @@
     }
 
     function getDisplayStringFor(identifier, key, iterations) {
-        var bytes = dcodeIO.ByteBuffer.concat([
+        var bytes = ByteBuffer.concat([
             shortToArrayBuffer(VERSION), key, identifier
         ]).toArrayBuffer();
         return iterateHash(bytes, key, iterations).then(function(output) {
