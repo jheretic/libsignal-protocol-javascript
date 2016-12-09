@@ -7,6 +7,7 @@ var cipher = require("./SessionCipher.js");
 var crypto = require("./crypto.js");
 var manager = require("./curve25519_worker_manager.js");
 
+/*
   module.exports = exports = {
       SignalProtocolAddress: address.SignalProtocolAddress,
       Curve: curve.Curve,
@@ -18,18 +19,25 @@ var manager = require("./curve25519_worker_manager.js");
       HKDF: crypto.HKDF,
       worker: manager
   }
-/*
-(function(global) {
-  global.libsignal = module.exports = exports = {
-      SignalProtocolAddress: address.SignalProtocolAddress,
-      Curve: curve.Curve,
-      KeyHelper: keyhelper.KeyHelper,
-      FingerprintGenerator: fingerprint.FingerprintGenerator,
-      SessionBuilder: builder.SessionBuilder,
-      SessionCipher: cipher.SessionCipher,
-      crypto: crypto.crypto,
-      HKDF: crypto.HKDF,
-      worker: manager.worker
-  }
-})(this);
 */
+(function(global, factory) {
+    if (typeof define === 'function' && define["amd"])
+        define(["bytebuffer"], factory);
+    else if (typeof require === "function" && typeof module === "object" && module && module["exports"])
+        module["exports"] = factory(require("bytebuffer"), true);
+    else
+        global["libsignal"] = factory(global["libsignal"]);
+})(this, function(Signal){
+    var s = {
+        SignalProtocolAddress: address.SignalProtocolAddress,
+        Curve: curve.Curve,
+        KeyHelper: keyhelper,
+        FingerprintGenerator: fingerprint,
+        SessionBuilder: builder.SessionBuilder,
+        SessionCipher: cipher.SessionCipher,
+        crypto: crypto.crypto,
+        HKDF: crypto.HKDF,
+        worker: manager
+    }
+    return s;
+});
