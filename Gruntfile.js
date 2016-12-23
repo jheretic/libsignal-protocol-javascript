@@ -10,6 +10,9 @@ module.exports = function(grunt) {
       dist: {
         src: 'src/index.js',
         dest: 'dist/libsignal-protocol-new.js',
+        options: {
+          banner: 'var libsignal = {};\n',
+        }
       }, 
       worker: {
         src: 'src/curve25519_worker.js',

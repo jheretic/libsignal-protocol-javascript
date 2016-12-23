@@ -7,19 +7,20 @@ var cipher = require("./SessionCipher.js");
 var crypto = require("./crypto.js");
 var manager = require("./curve25519_worker_manager.js");
 
+var libsignal = libsignal || {};
+
+libsignal = module.exports = exports = {
+    SignalProtocolAddress: address.SignalProtocolAddress,
+    Curve: curve.Curve,
+    KeyHelper: keyhelper,
+    FingerprintGenerator: fingerprint,
+    SessionBuilder: builder.SessionBuilder,
+    SessionCipher: cipher.SessionCipher,
+    crypto: crypto.crypto,
+    HKDF: crypto.HKDF,
+    worker: manager
+}
 /*
-  module.exports = exports = {
-      SignalProtocolAddress: address.SignalProtocolAddress,
-      Curve: curve.Curve,
-      KeyHelper: keyhelper,
-      FingerprintGenerator: fingerprint,
-      SessionBuilder: builder.SessionBuilder,
-      SessionCipher: cipher.SessionCipher,
-      crypto: crypto.crypto,
-      HKDF: crypto.HKDF,
-      worker: manager
-  }
-*/
 (function(global, factory) {
     if (typeof define === 'function' && define["amd"])
         define(["bytebuffer"], factory);
@@ -41,3 +42,4 @@ var manager = require("./curve25519_worker_manager.js");
     }
     return s;
 });
+*/
