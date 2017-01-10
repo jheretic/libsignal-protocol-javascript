@@ -9,10 +9,7 @@ module.exports = function(grunt) {
     browserify: {
       dist: {
         src: 'src/index.js',
-        dest: 'dist/libsignal-protocol-new.js',
-        options: {
-          banner: 'var libsignal = {};\n',
-        }
+        dest: 'dist/libsignal-browserify.js',
       }, 
       worker: {
         src: 'src/curve25519_worker.js',
@@ -38,6 +35,16 @@ module.exports = function(grunt) {
           }
         }
       },
+      dist: {
+        src: [
+          'dist/libsignal-browserify.js'
+        ],
+        dest: 'dist/libsignal-protocol-new.js',
+        options: {
+          banner: 'window.libsignal = {};\n',
+          footer: 'libsignal = module.exports = exports;\n',
+        }
+      }, 
       test: {
         src: [
           'node_modules/mocha/mocha.js',
@@ -176,7 +183,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dev', ['connect', 'watch']);
   grunt.registerTask('test', ['jshint', 'jscs', 'connect', 'saucelabs-mocha']);
-  grunt.registerTask('default', ['browserify']);
-  grunt.registerTask('build', ['compile', 'browserify']);
+  grunt.registerTask('default', ['browserify', 'concat']);
+  grunt.registerTask('build', ['compile', 'browserify', 'concat']);
 
 };
