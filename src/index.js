@@ -19,7 +19,7 @@ libsignal = module.exports = exports = {
     crypto: crypto.crypto,
     HKDF: crypto.HKDF,
     worker: manager
-}
+};
 /*
 (function(global, factory) {
     if (typeof define === 'function' && define["amd"])
